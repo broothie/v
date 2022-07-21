@@ -380,8 +380,8 @@ func Object(attr Attr, nodes ...Node) Element {
     return Tag("object", attr, nodes...)
 }
 
-// Ol creates a new "ol" HTML element
-func Ol(attr Attr, nodes ...Node) Element {
+// OL creates a new "ol" HTML element
+func OL(attr Attr, nodes ...Node) Element {
     return Tag("ol", attr, nodes...)
 }
 
@@ -585,8 +585,8 @@ func U(attr Attr, nodes ...Node) Element {
     return Tag("u", attr, nodes...)
 }
 
-// Ul creates a new "ul" HTML element
-func Ul(attr Attr, nodes ...Node) Element {
+// UL creates a new "ul" HTML element
+func UL(attr Attr, nodes ...Node) Element {
     return Tag("ul", attr, nodes...)
 }
 
