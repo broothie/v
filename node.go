@@ -41,3 +41,10 @@ func Func(f func() (Node, error)) NodeFunc {
 		return node.WriteHTML(w)
 	}
 }
+
+func FromReader(r io.Reader) NodeFunc {
+	return func(w io.Writer) (int, error) {
+		written, err := io.Copy(w, r)
+		return int(written), err
+	}
+}
