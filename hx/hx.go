@@ -3,7 +3,7 @@ package hx
 import (
 	"net/http"
 
-	"github.com/broothie/ghx/v"
+	"github.com/broothie/v"
 )
 
 var Script = v.JS("https://unpkg.com/htmx.org@1.7.0")
@@ -13,11 +13,10 @@ func RequestIsHX(r *http.Request) bool {
 }
 
 func Frame(url string) v.Node {
-	return v.Tag("hx-frame", v.Attr{
+	return v.Div(v.Attr{
 		"hx-get":     url,
 		"hx-trigger": "revealed",
 		"hx-swap":    "outerHTML",
-		"hx-headers": `{ "Hx-Frame": true }`,
 	})
 }
 
@@ -34,6 +33,10 @@ type LayoutFunc func(v.Node) v.Node
 
 type HX struct {
 	Layout LayoutFunc
+}
+
+func New(layoutFunc LayoutFunc) HX {
+	return HX{Layout: layoutFunc}
 }
 
 func (hx HX) Render(w http.ResponseWriter, r *http.Request, statusCode int, nodes ...v.Node) {
