@@ -32,6 +32,12 @@ func (c Classes) String() string {
 	return strings.Join(lo.Keys(lo.PickBy(c, func(_ string, value any) bool { return filterFalsey(value) })), " ")
 }
 
+type CSS map[string]any
+
+func (c CSS) String() string {
+	return strings.Join(lo.Map(lo.Entries(c), func(entry lo.Entry[string, any], _ int) string { return fmt.Sprintf("%s:%v;", entry.Key, entry.Value) }), "")
+}
+
 func JS(src string, attr ...Attr) Element {
 	return Script(Attr{"src": src, "type": "application/javascript"}.Merge(attr...))
 }
