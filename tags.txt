@@ -74,7 +74,7 @@ Nav
 Noframes
 NoScript
 Object
-Ol
+OL
 OptGroup
 Option
 Output
@@ -115,7 +115,7 @@ Title
 TR
 Track
 U
-Ul
+UL
 Var
 Video
 Wbr
