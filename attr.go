@@ -20,7 +20,7 @@ func (a Attr) WriteTo(w io.Writer) (int64, error) {
 		return fmt.Sprintf("%s=%q", html.EscapeString(entry.Key), html.EscapeString(fmt.Sprint(entry.Value))), true
 	})
 
-	n, err := w.Write([]byte(strings.Join(attrs, " ")))
+	n, err := fmt.Fprint(w, strings.Join(attrs, " "))
 	return int64(n), err
 }
 

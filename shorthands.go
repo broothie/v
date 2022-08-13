@@ -8,6 +8,16 @@ import (
 	"github.com/samber/lo"
 )
 
+func Document(doctype, lang string, head Node, body Node) Nodes {
+	return Nodes{
+		Doctype(doctype),
+		HTML(Attr{"lang": lang},
+			head,
+			body,
+		),
+	}
+}
+
 func If(condition bool, f NodeFunc) NodeFunc {
 	return func(w io.Writer) (int64, error) {
 		if condition {
