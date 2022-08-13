@@ -11,14 +11,17 @@ import (
 
 type Attr map[string]any
 
-func (a Attr) writeHTML(w io.Writer) (int, error) {
-	filtered := lo.PickBy(a, func(_ string, value any) bool { return filterFalsey(value) })
+func (a Attr) WriteTo(w io.Writer) (int64, error) {
+	attrs := lo.FilterMap(lo.Entries(a), func(entry lo.Entry[string, any], _ int) (string, bool) {
+		if nilOrFalse(entry.Value) {
+			return "", false
+		}
 
-	strs := lo.Map(lo.Entries(filtered), func(entry lo.Entry[string, any], _ int) string {
-		return fmt.Sprintf("%s=%q", html.EscapeString(entry.Key), html.EscapeString(fmt.Sprint(entry.Value)))
+		return fmt.Sprintf("%s=%q", html.EscapeString(entry.Key), html.EscapeString(fmt.Sprint(entry.Value))), true
 	})
 
-	return w.Write([]byte(strings.Join(strs, " ")))
+	n, err := w.Write([]byte(strings.Join(attrs, " ")))
+	return int64(n), err
 }
 
 func Attrs(attr ...Attr) Attr {
@@ -29,15 +32,14 @@ func (a Attr) Merge(attr ...Attr) Attr {
 	return Attrs(append([]Attr{a}, attr...)...)
 }
 
-func filterFalsey(value any) bool {
+func nilOrFalse(value any) bool {
 	if value == nil {
-		return false
+		return true
 	}
 
-	b, ok := value.(bool)
-	if ok {
-		return b
+	if b, ok := value.(bool); ok && !b {
+		return true
 	}
 
-	return true
+	return false
 }

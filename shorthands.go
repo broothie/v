@@ -9,9 +9,9 @@ import (
 )
 
 func If(condition bool, f NodeFunc) NodeFunc {
-	return func(w io.Writer) (int, error) {
+	return func(w io.Writer) (int64, error) {
 		if condition {
-			return f.WriteHTML(w)
+			return f.WriteTo(w)
 		}
 
 		return 0, nil
@@ -29,7 +29,7 @@ func IfErr(err error, f NodeFunc) NodeFunc {
 type Classes map[string]any
 
 func (c Classes) String() string {
-	return strings.Join(lo.Keys(lo.PickBy(c, func(_ string, value any) bool { return filterFalsey(value) })), " ")
+	return strings.Join(lo.Keys(lo.PickBy(c, func(_ string, value any) bool { return !nilOrFalse(value) })), " ")
 }
 
 type CSS map[string]any

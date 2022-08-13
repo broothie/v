@@ -3,25 +3,25 @@ package v
 import "io"
 
 type Node interface {
-	WriteHTML(w io.Writer) (int, error)
+	io.WriterTo
 }
 
-type NodeFunc func(w io.Writer) (int, error)
+type NodeFunc func(w io.Writer) (int64, error)
 
-func (f NodeFunc) WriteHTML(w io.Writer) (int, error) {
+func (f NodeFunc) WriteTo(w io.Writer) (int64, error) {
 	return f(w)
 }
 
 type Nodes []Node
 
-func (n Nodes) WriteHTML(w io.Writer) (int, error) {
-	total := 0
+func (n Nodes) WriteTo(w io.Writer) (int64, error) {
+	total := int64(0)
 	for _, node := range n {
 		if node == nil {
 			continue
 		}
 
-		if n, err := node.WriteHTML(w); err != nil {
+		if n, err := node.WriteTo(w); err != nil {
 			return total + n, err
 		} else {
 			total += n
@@ -32,19 +32,18 @@ func (n Nodes) WriteHTML(w io.Writer) (int, error) {
 }
 
 func Func(f func() (Node, error)) NodeFunc {
-	return func(w io.Writer) (int, error) {
+	return func(w io.Writer) (int64, error) {
 		node, err := f()
 		if err != nil {
 			return 0, err
 		}
 
-		return node.WriteHTML(w)
+		return node.WriteTo(w)
 	}
 }
 
 func FromReader(r io.Reader) NodeFunc {
-	return func(w io.Writer) (int, error) {
-		written, err := io.Copy(w, r)
-		return int(written), err
+	return func(w io.Writer) (int64, error) {
+		return io.Copy(w, r)
 	}
 }

@@ -19,6 +19,6 @@ func Render(w http.ResponseWriter, statusCode int, nodes ...Node) {
 	}
 }
 
-func WriteHTML(w io.Writer, nodes ...Node) (int, error) {
-	return Nodes(nodes).WriteHTML(w)
+func WriteHTML(w io.Writer, nodes ...Node) (int64, error) {
+	return Nodes(nodes).WriteTo(w)
 }

@@ -11,23 +11,23 @@ type Element struct {
 	Nodes      Nodes
 }
 
-func (e Element) WriteHTML(w io.Writer) (int, error) {
-	total := 0
+func (e Element) WriteTo(w io.Writer) (int64, error) {
+	total := int64(0)
 
 	if n, err := fmt.Fprintf(w, "<%s", e.Name); err != nil {
-		return total + n, err
+		return total + int64(n), err
 	} else {
-		total += n
+		total += int64(n)
 	}
 
 	if len(e.Attributes) > 0 {
 		if n, err := fmt.Fprint(w, " "); err != nil {
-			return total + n, err
+			return total + int64(n), err
 		} else {
-			total += n
+			total += int64(n)
 		}
 
-		if n, err := e.Attributes.writeHTML(w); err != nil {
+		if n, err := e.Attributes.WriteTo(w); err != nil {
 			return total + n, err
 		} else {
 			total += n
@@ -35,21 +35,21 @@ func (e Element) WriteHTML(w io.Writer) (int, error) {
 	}
 
 	if n, err := fmt.Fprint(w, ">"); err != nil {
-		return total + n, err
+		return total + int64(n), err
 	} else {
-		total += n
+		total += int64(n)
 	}
 
-	if n, err := e.Nodes.WriteHTML(w); err != nil {
+	if n, err := e.Nodes.WriteTo(w); err != nil {
 		return total + n, err
 	} else {
 		total += n
 	}
 
 	if n, err := fmt.Fprintf(w, "</%s>", e.Name); err != nil {
-		return total + n, err
+		return total + int64(n), err
 	} else {
-		total += n
+		total += int64(n)
 	}
 
 	return total, nil
